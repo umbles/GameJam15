@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://bq03aryjhfk0v"]
+
+[ext_resource type="Script" path="res://Player.gd" id="1_f74st"]
+[ext_resource type="Script" path="res://Label3D.gd" id="2_tsblw"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_nrfx2"]
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ahujf"]
+shading_mode = 0
+albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hfvyq"]
+material = SubResource("StandardMaterial3D_ahujf")
+height = 0.3
+rings = 16
+is_hemisphere = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_asius"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_j6qfb"]
+material = SubResource("StandardMaterial3D_asius")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="Environment" id="Environment_cwyhy"]
+reflected_light_source = 1
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_f74st")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+visible = false
+shape = SubResource("CylinderShape3D_nrfx2")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_hfvyq")
+skeleton = NodePath("")
+
+[node name="EyeRight" type="MeshInstance3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.15, -0.37)
+cast_shadow = 0
+mesh = SubResource("SphereMesh_j6qfb")
+skeleton = NodePath("")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.15, -0.37)
+cast_shadow = 0
+mesh = SubResource("SphereMesh_j6qfb")
+skeleton = NodePath("../EyeRight")
+
+[node name="CameraPivot" type="Marker3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.183013, 0.183013, 0.965926, -0.683013, -0.683013, 0.258819, 2, 17, 4)
+
+[node name="PlayerCamera" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-08, -2.98023e-08, 7.45058e-08, 1, 0, 0, 0)
+environment = SubResource("Environment_cwyhy")
+
+[node name="DebugLabel" type="Label3D" parent="CameraPivot"]
+transform = Transform3D(1, 8.9407e-08, -2.98023e-08, 8.9407e-08, 1, -2.98023e-08, -2.68221e-07, -2.68221e-07, 1, -1.02741, 0.0694933, -0.823555)
+pixel_size = 0.002
+text = "Test"
+horizontal_alignment = 0
+script = ExtResource("2_tsblw")
