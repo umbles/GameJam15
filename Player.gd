@@ -1,58 +1,50 @@
 extends CharacterBody3D
 
+@onready var camera_h = $CameraPivot/h
+@onready var mesh_pivot = $Pivot
+
 @export var speed = 18;
-@export var fall_acceleration = 75
-@export var jump_impulse = 20
+@export var gravity = 75
+@export var jump_height = 20
 
-var target_velocity = Vector3.ZERO
-var direction = Vector3.FORWARD
+var h_velocity = Vector3.ZERO
+var v_velocity = 0
 
-@onready var cameraPivot = $CameraPivot
-@onready var debugLabel = get_node("CameraPivot/DebugLabel")
+var direction = -Vector3.FORWARD
+var acceleration = 6
+var angular_acceleration = 7
 
 func _physics_process(delta):
+	var h_rotation: float = camera_h.global_transform.basis.get_euler().y;
+
 	#var forward = Vector3.FORWARD
-	var direction = Vector3(
-		Input.get_action_strength("move_left") - Input.get_action_strength("move_right"),
+	direction = Vector3(
+		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
 		0,
-		Input.get_action_strength("move_forward") - Input.get_action_strength("move_back") )
+		Input.get_action_strength("move_back") - Input.get_action_strength("move_forward")).rotated(Vector3.UP, h_rotation).normalized()
+
+	$Debug/Direction.text = "direction: " + str(direction);
 	
-	if Input.is_action_pressed("move_right"):
-		direction.x += 1
-	if Input.is_action_pressed("move_left"):
-		direction.x -= 1
-	if Input.is_action_pressed("move_back"):
-		direction.z += 1
-	if Input.is_action_pressed("move_forward"):
-		direction.z -= 1
+	var previous_direction = direction if direction != Vector3.ZERO else direction
+
 	
-	if direction != Vector3.ZERO:
-		# Normalise the movement vector
-		direction = direction.normalized()
-		if cameraPivot:
-			var cameraRotation = cameraPivot.transform.basis
-			direction = direction * cameraRotation
-		direction.y = 0
-		# Point the model in the direction of movement
-		$Pivot.basis = Basis.looking_at(direction)
+	velocity = lerp(velocity, direction * speed, delta * acceleration)
 		
-		
-	if debugLabel:
-		debugLabel.set_text(str(direction))
-	
-	# Ground Velocity
-	target_velocity.x = direction.x * speed
-	target_velocity.z = direction.z * speed
-	
 	# Vertical Velocity
 	if not is_on_floor():
-		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
-	
+		v_velocity = v_velocity - gravity * delta	
 	# Jumping
 	elif Input.is_action_just_pressed("jump"):
-		target_velocity.y = jump_impulse
+		v_velocity = jump_height
 	
-	velocity = target_velocity
-	
+	velocity.y = v_velocity
+
+	if previous_direction != Vector3.ZERO:
+		var current_rotation = lerp_angle(mesh_pivot.rotation.y, atan2(direction.x, direction.z), delta * angular_acceleration)
+		
+		if mesh_pivot.rotation.y != current_rotation:
+			mesh_pivot.rotation.y = current_rotation
+
+
 	move_and_slide()
 	
