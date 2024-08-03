@@ -7,8 +7,9 @@
 height = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ahujf"]
+transparency = 1
 shading_mode = 0
-albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+albedo_color = Color(0.156863, 0.156863, 0.156863, 0.498039)
 
 [sub_resource type="SphereMesh" id="SphereMesh_hfvyq"]
 material = SubResource("StandardMaterial3D_ahujf")
@@ -17,14 +18,19 @@ rings = 16
 is_hemisphere = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_asius"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.498039)
 
 [sub_resource type="SphereMesh" id="SphereMesh_j6qfb"]
 material = SubResource("StandardMaterial3D_asius")
 radius = 0.05
 height = 0.1
 
-[sub_resource type="Environment" id="Environment_cwyhy"]
-reflected_light_source = 1
+[sub_resource type="SphereMesh" id="SphereMesh_0mul2"]
+material = SubResource("StandardMaterial3D_ahujf")
+radius = 0.3
+height = 0.6
+rings = 16
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_f74st")
@@ -36,22 +42,32 @@ shape = SubResource("CylinderShape3D_nrfx2")
 
 [node name="Pivot" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot"]
+[node name="Standing" type="Node3D" parent="Pivot"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot/Standing"]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_hfvyq")
 skeleton = NodePath("")
 
-[node name="EyeRight" type="MeshInstance3D" parent="Pivot"]
+[node name="EyeRight" type="MeshInstance3D" parent="Pivot/Standing"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.15, -0.37)
 cast_shadow = 0
 mesh = SubResource("SphereMesh_j6qfb")
 skeleton = NodePath("")
 
-[node name="EyeLeft" type="MeshInstance3D" parent="Pivot"]
+[node name="EyeLeft" type="MeshInstance3D" parent="Pivot/Standing"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.15, -0.37)
 cast_shadow = 0
 mesh = SubResource("SphereMesh_j6qfb")
 skeleton = NodePath("../EyeRight")
+
+[node name="Jumping" type="Node3D" parent="Pivot"]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot/Jumping"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_0mul2")
+skeleton = NodePath("")
 
 [node name="CameraPivot" type="Marker3D" parent="."]
 script = ExtResource("2_f7ux6")
@@ -62,7 +78,6 @@ script = ExtResource("2_f7ux6")
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraPivot/h/v"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
-environment = SubResource("Environment_cwyhy")
 
 [node name="Debug" type="Control" parent="."]
 layout_mode = 3
