@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://bq03aryjhfk0v"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_f74st"]
-[ext_resource type="Script" path="res://Label3D.gd" id="2_tsblw"]
+[ext_resource type="Script" path="res://CameraPivot.gd" id="2_f7ux6"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_nrfx2"]
 height = 0.2
@@ -54,15 +54,35 @@ mesh = SubResource("SphereMesh_j6qfb")
 skeleton = NodePath("../EyeRight")
 
 [node name="CameraPivot" type="Marker3D" parent="."]
-transform = Transform3D(0.707107, -0.707107, 0, 0.183013, 0.183013, 0.965926, -0.683013, -0.683013, 0.258819, 2, 17, 4)
+script = ExtResource("2_f7ux6")
 
-[node name="PlayerCamera" type="Camera3D" parent="CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, -7.45058e-08, -2.98023e-08, 7.45058e-08, 1, 0, 0, 0)
+[node name="h" type="Node3D" parent="CameraPivot"]
+
+[node name="v" type="Node3D" parent="CameraPivot/h"]
+
+[node name="PlayerCamera" type="Camera3D" parent="CameraPivot/h/v"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
 environment = SubResource("Environment_cwyhy")
 
-[node name="DebugLabel" type="Label3D" parent="CameraPivot"]
-transform = Transform3D(1, 8.9407e-08, -2.98023e-08, 8.9407e-08, 1, -2.98023e-08, -2.68221e-07, -2.68221e-07, 1, -1.02741, 0.0694933, -0.823555)
-pixel_size = 0.002
-text = "Test"
-horizontal_alignment = 0
-script = ExtResource("2_tsblw")
+[node name="Debug" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Direction" type="Label" parent="Debug"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.179
+anchor_bottom = 0.069
+offset_right = 32.84
+offset_bottom = 20.24
+
+[node name="Label2" type="Label" parent="Debug"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.179
+anchor_bottom = 0.069
+offset_top = 20.0
+offset_right = 32.84
+offset_bottom = 40.24
